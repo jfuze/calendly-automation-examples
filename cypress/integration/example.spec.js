@@ -34,7 +34,7 @@ it('Player X wins a game', () => {
         );
 });
 
-const drawSequence = [1, 2, 3, 7, 8, 9, 4, 5, 6];
+const drawSequence = [0, 1, 2, 6, 7, 8, 3, 4, 5];
 
 it('End a game in a draw', () => {
     // using codepen's debug view pops the app out of the iframe so we don't have
@@ -49,7 +49,7 @@ it('End a game in a draw', () => {
         .click()
         .then(() => {
             drawSequence.forEach(position => {
-                cy.get(position).click();
+                cy.get(`td#${position}`).click();
             });
         })
         // draw isn't implemented as an end state right now so this won't pass
