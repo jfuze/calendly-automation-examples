@@ -12,13 +12,13 @@ it('Player X wins a game', () => {
         .click()
         .should('match', /x/i)
         // or just grab the IDs of the data cells directly
-        .findInIframe('td#0')
+        .findInIframe('td#1')
         .click()
         .should('match', /o/i)
         .findInIframe('td[data-column="0"][data-row="1"]')
         .click()
         .should('match', /x/i)
-        .findInIframe('td#4')
+        .findInIframe('td#5')
         .click()
         .should('match', /o/i)
         .findInIframe('td[data-column="0"][data-row="2"]')
@@ -26,7 +26,7 @@ it('Player X wins a game', () => {
         .should('match', /x/i)
 
         .findInIframe('#endgame')
-        // X went first and went straight down, so X wins. This won't pass because
+        // X went first and went straight down, so X should win. This won't pass because
         // of the bug that's declaring the next player the winner
         .should(
             'contain',
@@ -57,28 +57,30 @@ it('End a game in a draw', () => {
         .should('contain', 'draw!');
 });
 
-const boardSizes = [3, 5, 7];
+context('Test different board sizes', () => {
+    const boardSizes = [3, 5, 7];
+    beforeEach(() => cy.visit(`${Cypress.config('debugUrl')}`));
 
-boardSizes.forEach(n => {
-    it(`Playable board is a ${n}-squared cube`, () => {
-        cy.visit(`${Cypress.config('debugUrl')}`)
+    boardSizes.forEach(n => {
+        it(`Playable board is a ${n}-squared cube`, () => {
             // custom command to move the repetitive setup out of the way
-            .setupBoard(n)
+            cy.setupBoard(n)
 
-            // row is n spaces long
-            .get('tr td[data-row="0"]')
-            .then(row => {
-                cy.wrap(row).should('have.length', n);
-            })
-            // column is n spaces long
-            .get('tr td[data-column="0"]')
-            .then(column => {
-                cy.wrap(column).should('have.length', n);
-            })
-            // total cell count is n-squared
-            .get('table td')
-            .then(cells => {
-                cy.wrap(cells).should('have.length', n * n);
-            });
+                // row is n spaces long
+                .get('tr td[data-row="0"]')
+                .then(row => {
+                    cy.wrap(row).should('have.length', n);
+                })
+                // column is n spaces long
+                .get('tr td[data-column="0"]')
+                .then(column => {
+                    cy.wrap(column).should('have.length', n);
+                })
+                // total cell count is n-squared
+                .get('table td')
+                .then(cells => {
+                    cy.wrap(cells).should('have.length', n * n);
+                });
+        });
     });
 });
